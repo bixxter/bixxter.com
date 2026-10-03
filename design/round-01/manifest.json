@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "project": "Asatulla — personal site",
+  "brief": "Personal site of an indie Mac developer. A visitor from X or GitHub sees in one screen what he makes (Dyno Chess, Adlib, app-growth-design, adlib-lyrics) and clicks through to one of them.",
+  "round": "01",
+  "candidates": [
+    {
+      "id": "desktop",
+      "name": "Desktop",
+      "concept": "The page is a Mac screen and every project sits where it actually lives: Dyno Chess in the notch, Adlib in the top corner singing the intro, the skill and the mod in a Claude Code terminal.",
+      "typography": "SF Pro (system) 13px menu bar / 24px lyrics semibold; SF Mono 12.5px terminal",
+      "palette": ["#12151c", "#1d4766", "#5f3150", "#f4f2ee", "#66e680"],
+      "traits": ["Screen-as-interface first screen", "Hover the notch to open a chess island", "The intro is sung word by word by Adlib", "Risky on phones: it becomes an iPhone-style island + stacked windows"],
+      "kind": "html",
+      "interactive": true,
+      "source": "01-desktop.html"
+    },
+    {
+      "id": "tracklist",
+      "name": "Tracklist",
+      "concept": "An album back cover: one big sentence, then the work as a tracklist. Side A is Mac apps, side B is Claude Code. Hovering a track pulls it into focus and blurs the rest, Adlib's own effect.",
+      "typography": "Helvetica Neue 500, 90px / -0.04em headline with the second line in grey; 30px track names; SF Mono 13px track numbers",
+      "palette": ["#ffffff", "#0b0b0b", "#8b8b8b", "#b9b9b9", "#e8e8e8"],
+      "traits": ["Full-width type then a ruled list", "Black and white; colour only comes from product screenshots on hover", "Headline focuses in word by word on first load", "Scales to 20 projects without a redesign"],
+      "kind": "html",
+      "interactive": true,
+      "source": "02-tracklist.html"
+    },
+    {
+      "id": "workbench",
+      "name": "Workbench",
+      "concept": "Graph paper on a desk with each thing laid out working: solve a mate-in-one for Dyno Chess, watch Adlib sing, see the skill answer a question, the mascot dance.",
+      "typography": "Charter 700 for names (26–34px), Charter 16.5px body, SF Mono 12–13px labels",
+      "palette": ["#f3f0e8", "#1d2a44", "#ff5a1f", "#101114", "#c9b48f"],
+      "traits": ["Grid collage, no single hero", "A playable mate-in-one on the home page", "Warm paper with two night tiles", "Most playful, least like a portfolio"],
+      "kind": "html",
+      "interactive": true,
+      "source": "03-workbench.html"
+    }
+  ]
+}

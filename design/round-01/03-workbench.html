@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asatulla — workbench</title>
+<style>
+:root{
+  --paper:#f3f0e8; --grid:rgba(29,42,68,.065); --ink:#1d2a44; --ink-2:#5f6a80; --ink-3:#98a0af; --line:#d9d4c7;
+  --hot:#ff5a1f; --card:#fbfaf6; --night:#101114;
+  --serif:Charter,"Bitstream Charter","Iowan Old Style",Georgia,serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  --click:cubic-bezier(.3,1.4,.5,1); --flow:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+body{font-family:var(--serif);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 32px 64px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:22px}
+header h1{font-size:34px;font-weight:700;letter-spacing:-.01em;line-height:1}
+header p{font:13px/1.5 var(--mono);color:var(--ink-2);margin-top:8px}
+header nav{display:flex;gap:18px;font:13px var(--mono)}
+header nav a{text-decoration:none;color:var(--ink-2)}header nav a:hover{color:var(--hot)}
+.bench{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.tile{position:relative;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:18px 20px 18px;display:flex;flex-direction:column;
+  box-shadow:0 1px 0 rgba(29,42,68,.04);opacity:0;transform:translateY(12px);animation:in .6s var(--flow) forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.tile .k{display:flex;justify-content:space-between;font:12px var(--mono);color:var(--ink-3);letter-spacing:.02em}
+.tile h2{font-size:26px;font-weight:700;margin-top:10px;letter-spacing:-.01em}
+.tile .d{font-size:16.5px;line-height:1.5;color:var(--ink-2);margin-top:6px;max-width:42ch}
+.tile .go{margin-top:auto;padding-top:16px;font:13px var(--mono);text-decoration:none;display:flex;justify-content:space-between;color:var(--ink)}
+.tile .go:hover span:first-child{color:var(--hot)}
+.t1{grid-column:span 5;grid-row:span 2}
+.t2{grid-column:span 7;background:var(--night);color:#f4f2ee;border-color:#000;animation-delay:.08s}
+.t3{grid-column:span 4;animation-delay:.16s}
+.t4{grid-column:span 3;background:var(--night);color:#f4f2ee;border-color:#000;animation-delay:.24s}
+.t2 .k,.t4 .k{color:#6c707a}.t2 .d,.t4 .d{color:#a3a7ae}.t2 .go,.t4 .go{color:#f4f2ee}
+/* chess puzzle */
+.board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);aspect-ratio:1;width:min(100%,380px);margin:18px auto 0;border:1px solid var(--ink);user-select:none}
+.board button{all:unset;display:grid;place-items:center;font-size:30px;line-height:1;background:#efe6d2;cursor:default;position:relative;transition:background .15s}
+.board button.dk{background:#c9b48f}
+.board button.mv{cursor:pointer}
+.board button.sel{background:#ffd9a8}
+.board button.tg::after{content:"";width:28%;aspect-ratio:1;border-radius:50%;background:rgba(255,90,31,.55);position:absolute}
+.board button.mate{background:var(--hot);color:#fff}
+.pc{display:inline-block;transition:transform .32s var(--flow)}
+.board.shake{animation:shake .32s}
+@keyframes shake{30%{transform:translateX(-6px)}60%{transform:translateX(5px)}}
+.status{font:13px var(--mono);margin-top:10px;color:var(--ink-2);min-height:20px}
+.status b{color:var(--hot);font-weight:600}
+/* lyrics */
+.lyr{margin:18px 0 4px;font-family:-apple-system,"Helvetica Neue",sans-serif;font-size:24px;font-weight:600;line-height:1.5;letter-spacing:-.01em;text-align:center}
+.lyr div{transition:opacity .5s,filter .5s}
+.lyr .o{opacity:.3;filter:blur(1.4px);font-size:20px}
+.lyr .w{display:inline-block;transition:filter .35s var(--flow),opacity .35s var(--flow),transform .35s var(--flow)}
+.lyr .w.later{filter:blur(4px);opacity:.25;transform:scale(.92)}
+/* skill card */
+.q{font:13px/1.55 var(--mono);margin-top:14px;padding:12px 14px;border-left:2px solid var(--hot);background:#f6f2ea;color:var(--ink)}
+.q s{text-decoration:none;color:var(--ink-3)}
+.cmd{font:12.5px var(--mono);margin-top:12px;color:var(--ink-2)}
+.cmd b{color:var(--ink);font-weight:500}
+/* mod */
+.mascot{width:72px;height:54px;display:block;margin:16px auto 8px}
+.mascot g{display:none}.mascot[data-p="0"] .p0,.mascot[data-p="1"] .p1{display:inline}
+.mod-line{font:12.5px/1.5 var(--mono);text-align:center;color:#7d8590}.mod-line b{color:#fff;font-weight:600}
+@media (max-width:860px){
+  .wrap{padding:20px 16px 48px}
+  header{flex-direction:column;align-items:flex-start}
+  .bench{grid-template-columns:1fr}.tile{grid-column:auto!important;grid-row:auto!important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.tile{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>Asatulla</h1><p>bixxter · Almaty · Mac apps and Claude Code tools. Everything on this table works, poke it.</p></div>
+    <nav><a href="#">github</a><a href="#">x</a><a href="#">telegram</a></nav>
+  </header>
+
+  <section class="bench">
+    <article class="tile t1">
+      <div class="k"><span>01 · Mac app</span><span>free · pro $14.99</span></div>
+      <h2>Dyno Chess</h2>
+      <p class="d">Chess in your MacBook's notch. Hover, play a move, get back to work.</p>
+      <div class="board" id="board" aria-label="Mate in one puzzle"></div>
+      <p class="status" id="status">White to move. Mate in one.</p>
+      <a class="go" href="#"><span>dynochess.bixxter.com</span><span>↗</span></a>
+    </article>
+
+    <article class="tile t2">
+      <div class="k"><span>02 · Mac app</span><span>$4.99 once</span></div>
+      <h2>Adlib</h2>
+      <p class="d">Synced lyrics floating over your Mac, word by word. Apple Music and Spotify.</p>
+      <div class="lyr" id="lyr"><div class="o">the lights are fading into the background</div><div class="now">every word I need is glowing in the corner</div><div class="o">eyes still on my work, but I sing it low</div></div>
+      <a class="go" href="#"><span>tryadlib.web.app</span><span>↗</span></a>
+    </article>
+
+    <article class="tile t3">
+      <div class="k"><span>03 · Claude Code skill</span><span>free</span></div>
+      <h2>app-growth-design</h2>
+      <p class="d">30 app teardowns as six playbooks: onboarding, paywalls, retention.</p>
+      <div class="q"><s>&gt;</s> paywall converts at 2%, what first?<br>Structure out-tests price. A trial on a weekly plan: LTV $7.40 → $54.50. <s>[06]</s></div>
+      <p class="cmd">$ <b>npx app-growth-design</b></p>
+      <a class="go" href="#"><span>github</span><span>↗</span></a>
+    </article>
+
+    <article class="tile t4">
+      <div class="k"><span>04 · mod</span><span>free</span></div>
+      <h2>adlib-lyrics</h2>
+      <svg class="mascot" id="mascot" data-p="0" viewBox="0 0 16 12" shape-rendering="crispEdges"><g class="p0"><rect x="5" y="0" width="1" height="1" fill="#666"/><rect x="6" y="0" width="1" height="1" fill="#666"/><rect x="7" y="0" width="1" height="1" fill="#666"/><rect x="8" y="0" width="1" height="1" fill="#666"/><rect x="9" y="0" width="1" height="1" fill="#666"/><rect x="10" y="0" width="1" height="1" fill="#666"/><rect x="3" y="1" width="1" height="1" fill="#666"/><rect x="4" y="1" width="1" height="1" fill="#666"/><rect x="11" y="1" width="1" height="1" fill="#666"/><rect x="12" y="1" width="1" height="1" fill="#666"/><rect x="2" y="2" width="1" height="1" fill="#666"/><rect x="5" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="2" width="1" height="1" fill="#666"/><rect x="2" y="3" width="1" height="1" fill="#666"/><rect x="4" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="3" width="1" height="1" fill="#666"/><rect x="1" y="4" width="1" height="1" fill="#666"/><rect x="2" y="4" width="1" height="1" fill="#666"/><rect x="3" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="4" width="1" height="1" fill="#666"/><rect x="14" y="4" width="1" height="1" fill="#666"/><rect x="1" y="5" width="1" height="1" fill="#666"/><rect x="2" y="5" width="1" height="1" fill="#666"/><rect x="3" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="5" width="1" height="1" fill="#fff"/><rect x="7" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="5" width="1" height="1" fill="#fff"/><rect x="11" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="5" width="1" height="1" fill="#666"/><rect x="14" y="5" width="1" height="1" fill="#666"/><rect x="1" y="6" width="1" height="1" fill="#666"/><rect x="2" y="6" width="1" height="1" fill="#666"/><rect x="3" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="6" width="1" height="1" fill="#666"/><rect x="14" y="6" width="1" height="1" fill="#666"/><rect x="0" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="1" y="7" width="1" height="1" fill="#666"/><rect x="2" y="7" width="1" height="1" fill="#666"/><rect x="3" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="5" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="12" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="7" width="1" height="1" fill="#666"/><rect x="14" y="7" width="1" height="1" fill="#666"/><rect x="1" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="2" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="14" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="11" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="11" width="1" height="1" fill="#f5f5f5"/></g><g class="p1"><rect x="5" y="0" width="1" height="1" fill="#666"/><rect x="6" y="0" width="1" height="1" fill="#666"/><rect x="7" y="0" width="1" height="1" fill="#666"/><rect x="8" y="0" width="1" height="1" fill="#666"/><rect x="9" y="0" width="1" height="1" fill="#666"/><rect x="10" y="0" width="1" height="1" fill="#666"/><rect x="3" y="1" width="1" height="1" fill="#666"/><rect x="4" y="1" width="1" height="1" fill="#666"/><rect x="11" y="1" width="1" height="1" fill="#666"/><rect x="12" y="1" width="1" height="1" fill="#666"/><rect x="2" y="2" width="1" height="1" fill="#666"/><rect x="5" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="2" width="1" height="1" fill="#666"/><rect x="2" y="3" width="1" height="1" fill="#666"/><rect x="4" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="3" width="1" height="1" fill="#666"/><rect x="1" y="4" width="1" height="1" fill="#666"/><rect x="2" y="4" width="1" height="1" fill="#666"/><rect x="3" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="4" width="1" height="1" fill="#666"/><rect x="14" y="4" width="1" height="1" fill="#666"/><rect x="1" y="5" width="1" height="1" fill="#666"/><rect x="2" y="5" width="1" height="1" fill="#666"/><rect x="3" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="5" width="1" height="1" fill="#fff"/><rect x="7" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="5" width="1" height="1" fill="#fff"/><rect x="11" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="5" width="1" height="1" fill="#666"/><rect x="14" y="5" width="1" height="1" fill="#666"/><rect x="1" y="6" width="1" height="1" fill="#666"/><rect x="2" y="6" width="1" height="1" fill="#666"/><rect x="3" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="6" width="1" height="1" fill="#666"/><rect x="14" y="6" width="1" height="1" fill="#666"/><rect x="1" y="7" width="1" height="1" fill="#666"/><rect x="2" y="7" width="1" height="1" fill="#666"/><rect x="3" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="5" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="12" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="7" width="1" height="1" fill="#666"/><rect x="14" y="7" width="1" height="1" fill="#666"/><rect x="15" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="14" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="2" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="1" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="11" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="11" width="1" height="1" fill="#f5f5f5"/></g></svg>
+      <p class="mod-line"><b>one more commit</b> before the storm</p>
+      <p class="d" style="font-size:15px;margin-top:12px">Adlib's lyrics above your Claude Code prompt.</p>
+      <a class="go" href="#"><span>github</span><span>↗</span></a>
+    </article>
+  </section>
+</div>
+<script>
+// back-rank mate: Ra1–a8#
+const P={6:'♚',13:'♟',14:'♟',15:'♟',53:'♙',54:'♙',55:'♙',62:'♔',56:'♖'};
+const b=document.getElementById('board'),st=document.getElementById('status');let sel=null,done=false;
+const cells=[];
+for(let i=0;i<64;i++){const c=document.createElement('button');if((Math.floor(i/8)+i)%2)c.classList.add('dk');
+  if(P[i]){const s=document.createElement('span');s.className='pc';s.textContent=P[i];c.append(s)}
+  c.setAttribute('aria-label','square '+'abcdefgh'[i%8]+(8-Math.floor(i/8)));
+  if([53,54,55,62,56].includes(i))c.classList.add('mv');
+  c.onclick=()=>tap(i);cells.push(c);b.append(c)}
+const white=i=>[53,54,55,62,56].includes(i)&&cells[i].querySelector('.pc');
+function targets(i){if(i===56)return[48,40,32,24,16,8,0,57,58,59,60,61];if(i===62)return[61,63];if(i>=53&&i<=55)return[i-8,i-16];return[]}
+function clear(){cells.forEach(c=>c.classList.remove('sel','tg'))}
+function tap(i){if(done)return;
+  if(sel!==null&&targets(sel).includes(i)){move(sel,i);return}
+  clear();if(!white(i)){sel=null;return}
+  sel=i;cells[i].classList.add('sel');targets(i).forEach(t=>cells[t].classList.add('tg'))}
+function move(a,z){const pc=cells[a].querySelector('.pc'),A=cells[a].getBoundingClientRect(),Z=cells[z].getBoundingClientRect();
+  clear();pc.style.transform=`translate(${Z.left-A.left}px,${Z.top-A.top}px)`;
+  setTimeout(()=>{pc.style.transition='none';pc.style.transform='';cells[z].append(pc);requestAnimationFrame(()=>pc.style.transition='');
+    if(a===56&&z===0){done=true;cells[6].classList.add('mate');st.innerHTML='<b>Checkmate.</b> That took one move. Now imagine it in your notch.'}
+    else{st.textContent='Not that one. The king has no squares, look at the back rank.';b.classList.add('shake');
+      setTimeout(()=>{b.classList.remove('shake');cells[a].append(pc)},700)}
+    sel=null},330)}
+// lyrics word focus
+const S=["the lights are fading into the background","every word I need is glowing in the corner","eyes still on my work, but I sing it low","don't need a window, don't need a stage"];
+const ly=document.getElementById('lyr');let k=1;
+function sing(){ly.innerHTML='';[-1,0,1].forEach(o=>{const d=document.createElement('div'),t=S[(k+o+S.length)%S.length];
+  if(o){d.className='o';d.textContent=t}else t.split(' ').forEach((w,j)=>{const s=document.createElement('span');s.className='w later';s.textContent=w;d.append(s,' ');setTimeout(()=>s.classList.remove('later'),100+j*210)});ly.append(d)})}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){sing();setInterval(()=>{k=(k+1)%S.length;sing()},2800)}
+const m=document.getElementById('mascot');setInterval(()=>m.dataset.p=m.dataset.p==='0'?'1':'0',500);
+</script>
+</body>
+</html>

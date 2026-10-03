@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asatulla — desktop</title>
+<style>
+:root{
+  --wall:#12151c; --ink:#f4f2ee; --ink-2:rgba(244,242,238,.62); --ink-3:rgba(244,242,238,.38);
+  --bar:rgba(18,20,27,.42); --line:rgba(255,255,255,.09); --term:#0c0d10; --dino:#66e680;
+  --ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  --click:cubic-bezier(.3,1.35,.5,1); --flow:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--wall);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.screen{position:relative;min-height:100vh;overflow:hidden;
+  background:
+    radial-gradient(70% 70% at 8% 38%,#1d4766 0,transparent 62%),
+    radial-gradient(60% 75% at 96% 42%,#5f3150 0,transparent 64%),
+    radial-gradient(50% 50% at 50% 110%,#2a2440 0,transparent 70%),var(--wall)}
+/* menu bar */
+.bar{position:absolute;inset:0 0 auto;height:30px;display:flex;align-items:center;gap:20px;padding:0 18px;
+  font-size:13px;background:var(--bar);backdrop-filter:blur(30px) saturate(1.4);-webkit-backdrop-filter:blur(30px) saturate(1.4);z-index:5}
+.bar b{font-weight:700}
+.bar a{opacity:.9}
+.bar a:hover{opacity:1}
+.bar .right{margin-left:auto;display:flex;gap:18px;align-items:center;font-variant-numeric:tabular-nums}
+.bar svg{width:20px;height:14px;display:block}
+/* notch → island */
+.notch{position:absolute;top:0;left:50%;width:330px;height:34px;translate:-50% 0;background:#000;border-radius:0 0 16px 16px;z-index:6;
+  overflow:hidden;cursor:pointer;transition:width .5s var(--flow),height .5s var(--flow),border-radius .5s var(--flow)}
+.compact{position:absolute;inset:0 0 auto;height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 16px 0 14px;font-size:12.5px;font-weight:600;transition:opacity .15s}
+.compact em{font-style:normal;color:var(--dino)}
+.notch.open .compact{opacity:0}
+.notch .in{opacity:0;transition:opacity .2s;display:grid;grid-template-columns:auto 1fr;gap:18px;padding:22px 22px 20px;width:460px}
+.notch.open{width:460px;height:236px;border-radius:0 0 30px 30px}
+.notch.open .in{opacity:1;transition:opacity .3s .12s}
+.board{width:192px;height:192px;display:grid;grid-template-columns:repeat(8,1fr);border-radius:6px;overflow:hidden}
+.board i{display:grid;place-items:center;font-style:normal;font-size:19px;line-height:1;color:#111;background:#eddbbd}
+.board i.d{background:#8c6645}
+.board i.w{color:#fff;text-shadow:0 0 1px #000,0 1px 0 #000}
+.island h3{font-size:17px;font-weight:600;display:flex;gap:8px;align-items:center}
+.island p{font-size:13.5px;line-height:1.45;color:var(--ink-2);margin-top:6px}
+.island .meta{font:12px var(--mono);color:var(--ink-3);margin-top:12px}
+.island .go{display:inline-flex;margin-top:16px;font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;background:var(--dino);color:#08210f;transition:transform .15s}
+.island .go:active{transform:scale(.97)}
+.hint{position:absolute;top:44px;left:50%;translate:-50% 0;font-size:12px;color:var(--ink-3);white-space:nowrap;z-index:4;transition:opacity .3s}
+.notch.open ~ .hint{opacity:0}
+/* adlib overlay */
+.lyrics{position:absolute;top:96px;right:40px;width:410px;text-align:center;z-index:2}
+.lyrics .l{font-size:24px;font-weight:600;letter-spacing:-.01em;line-height:1.45;color:#fff;transition:filter .6s var(--flow),opacity .6s var(--flow),transform .6s var(--flow)}
+.lyrics .l.p2{opacity:.16;filter:blur(1.5px)} .lyrics .l.p1{opacity:.42;filter:blur(.6px)}
+.lyrics .l.n1{opacity:.4;filter:blur(1.5px)} .lyrics .l.n2{opacity:.2;filter:blur(2.4px)}
+.lyrics .l.now{text-shadow:0 0 18px rgba(255,255,255,.35)}
+.lyrics .w{display:inline-block;transition:filter .35s var(--flow),opacity .35s var(--flow),transform .35s var(--flow)}
+.lyrics .now .w.later{filter:blur(4px);opacity:.25;transform:scale(.92)}
+.tag{display:block;margin-top:22px;font-size:12.5px;color:var(--ink-3);line-height:1.5}
+.tag b{color:var(--ink);font-weight:600}
+.tag:hover b{text-decoration:underline;text-underline-offset:3px}
+/* terminal */
+.term{position:absolute;left:64px;bottom:64px;width:640px;border-radius:12px;background:var(--term);
+  box-shadow:0 0 0 .5px rgba(255,255,255,.14),0 30px 80px -20px rgba(0,0,0,.7);overflow:hidden;z-index:2}
+.term .tb{height:30px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--ink-3)}
+.term .tb span{width:12px;height:12px;border-radius:50%;background:#3a3b40}
+.term .tb em{font-style:normal;margin:0 auto;translate:-30px 0}
+.term pre{font:12.5px/1.6 var(--mono);padding:14px 18px 6px;color:#d6d6d6;white-space:pre-wrap}
+.term .g{color:#7ee787}.term .d{color:#7d8590}.term .y{color:#e3b341}.term .c{color:#f0883e}
+.band{display:flex;align-items:center;gap:14px;padding:6px 18px 4px}
+.band svg{width:40px;height:30px;image-rendering:pixelated;flex:none}
+.band .lines{font:12.5px/1.45 var(--mono);color:#9aa0a6}
+.band .lines b{color:#fff;font-weight:600}
+.prompt{margin:8px 14px 14px;border:1px solid #3a3b40;border-radius:8px;padding:8px 12px;font:12.5px var(--mono);color:#7d8590}
+.notes{position:absolute;left:740px;bottom:72px;width:300px;display:grid;gap:26px;z-index:2}
+.note{font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.note b{display:block;color:var(--ink);font-weight:600;font-size:14px;margin-bottom:2px}
+.note code{font:12px var(--mono);color:var(--ink-3)}
+.note:hover b{text-decoration:underline;text-underline-offset:3px}
+/* entrance */
+.enter{opacity:0;translate:0 10px;animation:in .7s var(--flow) forwards}
+@keyframes in{to{opacity:1;translate:0 0}}
+.mascot g{display:none}
+.mascot[data-p="0"] .p0,.mascot[data-p="1"] .p1{display:inline}
+@media (max-width:760px){
+  .bar .hide{display:none}
+  .lyrics{position:relative;top:auto;right:auto;width:auto;margin:150px 20px 0}
+  .lyrics .l{font-size:19px}
+  .term{position:relative;left:auto;bottom:auto;width:auto;margin:40px 16px 0}
+  .notes{position:relative;left:auto;bottom:auto;width:auto;margin:22px 20px 48px}
+  .notch.open{width:calc(100vw - 24px);height:auto}
+  .notch .in{width:100%;grid-template-columns:1fr}
+  .board{width:100%;height:auto;aspect-ratio:1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.enter{opacity:1;translate:0 0}}
+</style>
+</head>
+<body>
+<main class="screen">
+  <nav class="bar">
+    <b>Asatulla</b>
+    <a href="#">GitHub</a><a href="#">X</a><a href="#" class="hide">Telegram</a>
+    <div class="right">
+      <svg viewBox="0 0 30 20" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M3 6c4-3 7-3 10-1s6 2 9-1 4-1 5 0" opacity=".45"/><path d="M2 11c5-3 8-3 12-1s7 1 10-1 3-1 4 0"/><path d="M4 16c4-2 7-2 10-1s6 1 9-1" opacity=".45"/></svg>
+      <span class="hide">Almaty</span><span id="clock">Sat 17:12</span>
+    </div>
+  </nav>
+
+  <div class="notch" id="notch" tabindex="0" aria-label="Dyno Chess">
+    <div class="compact"><span>♞ Dyno Chess</span><em>your move</em></div>
+    <div class="in island">
+      <div class="board" id="board"></div>
+      <div>
+        <h3>Dyno Chess</h3>
+        <p>Chess in your MacBook's notch. Hover, play a move, get back to work. It also waves when Claude Code needs you.</p>
+        <div class="meta">Mac app · free · Pro $14.99 once</div>
+        <a class="go" href="#">dynochess.bixxter.com ↗</a>
+      </div>
+    </div>
+  </div>
+  <div class="hint enter" style="animation-delay:.9s">↑ hover the notch, there's a chess game in it</div>
+
+  <section class="lyrics enter" style="animation-delay:.15s" aria-label="Intro">
+    <div id="lines">
+      <div class="l p1">Hi, I'm Asatulla</div>
+      <div class="l now">I make small apps for the Mac</div>
+      <div class="l n1">the kind that live in the corners</div>
+      <div class="l n2">and a few things for Claude Code</div>
+    </div>
+    <a class="tag" href="#"><b>Adlib</b> is singing this. Synced lyrics over your Mac, word by word. $4.99 ↗</a>
+  </section>
+
+  <div class="term enter" style="animation-delay:.35s">
+    <div class="tb"><span></span><span></span><span></span><em>~/dev — claude</em></div>
+<pre><span class="d">$</span> npx app-growth-design
+<span class="g">✓</span> installed to ~/.claude/skills/app-growth-design
+
+<span class="c">&gt;</span> my paywall converts at 2%, what do I test first?
+<span class="y">⏺</span> Structure out-tests price. A free trial on a weekly plan
+  took 12-month LTV from $7.40 to $54.50. <span class="d">[06]</span></pre>
+    <div class="band">
+      <svg class="mascot" id="mascot" data-p="0" viewBox="0 0 16 12" shape-rendering="crispEdges"><g class="p0"><rect x="5" y="0" width="1" height="1" fill="#666"/><rect x="6" y="0" width="1" height="1" fill="#666"/><rect x="7" y="0" width="1" height="1" fill="#666"/><rect x="8" y="0" width="1" height="1" fill="#666"/><rect x="9" y="0" width="1" height="1" fill="#666"/><rect x="10" y="0" width="1" height="1" fill="#666"/><rect x="3" y="1" width="1" height="1" fill="#666"/><rect x="4" y="1" width="1" height="1" fill="#666"/><rect x="11" y="1" width="1" height="1" fill="#666"/><rect x="12" y="1" width="1" height="1" fill="#666"/><rect x="2" y="2" width="1" height="1" fill="#666"/><rect x="5" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="2" width="1" height="1" fill="#666"/><rect x="2" y="3" width="1" height="1" fill="#666"/><rect x="4" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="3" width="1" height="1" fill="#666"/><rect x="1" y="4" width="1" height="1" fill="#666"/><rect x="2" y="4" width="1" height="1" fill="#666"/><rect x="3" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="4" width="1" height="1" fill="#666"/><rect x="14" y="4" width="1" height="1" fill="#666"/><rect x="1" y="5" width="1" height="1" fill="#666"/><rect x="2" y="5" width="1" height="1" fill="#666"/><rect x="3" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="5" width="1" height="1" fill="#fff"/><rect x="7" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="5" width="1" height="1" fill="#fff"/><rect x="11" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="5" width="1" height="1" fill="#666"/><rect x="14" y="5" width="1" height="1" fill="#666"/><rect x="1" y="6" width="1" height="1" fill="#666"/><rect x="2" y="6" width="1" height="1" fill="#666"/><rect x="3" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="6" width="1" height="1" fill="#666"/><rect x="14" y="6" width="1" height="1" fill="#666"/><rect x="0" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="1" y="7" width="1" height="1" fill="#666"/><rect x="2" y="7" width="1" height="1" fill="#666"/><rect x="3" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="5" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="12" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="7" width="1" height="1" fill="#666"/><rect x="14" y="7" width="1" height="1" fill="#666"/><rect x="1" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="2" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="14" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="11" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="11" width="1" height="1" fill="#f5f5f5"/></g><g class="p1"><rect x="5" y="0" width="1" height="1" fill="#666"/><rect x="6" y="0" width="1" height="1" fill="#666"/><rect x="7" y="0" width="1" height="1" fill="#666"/><rect x="8" y="0" width="1" height="1" fill="#666"/><rect x="9" y="0" width="1" height="1" fill="#666"/><rect x="10" y="0" width="1" height="1" fill="#666"/><rect x="3" y="1" width="1" height="1" fill="#666"/><rect x="4" y="1" width="1" height="1" fill="#666"/><rect x="11" y="1" width="1" height="1" fill="#666"/><rect x="12" y="1" width="1" height="1" fill="#666"/><rect x="2" y="2" width="1" height="1" fill="#666"/><rect x="5" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="2" width="1" height="1" fill="#666"/><rect x="2" y="3" width="1" height="1" fill="#666"/><rect x="4" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="3" width="1" height="1" fill="#666"/><rect x="1" y="4" width="1" height="1" fill="#666"/><rect x="2" y="4" width="1" height="1" fill="#666"/><rect x="3" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="4" width="1" height="1" fill="#666"/><rect x="14" y="4" width="1" height="1" fill="#666"/><rect x="1" y="5" width="1" height="1" fill="#666"/><rect x="2" y="5" width="1" height="1" fill="#666"/><rect x="3" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="5" width="1" height="1" fill="#fff"/><rect x="7" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="5" width="1" height="1" fill="#fff"/><rect x="11" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="5" width="1" height="1" fill="#666"/><rect x="14" y="5" width="1" height="1" fill="#666"/><rect x="1" y="6" width="1" height="1" fill="#666"/><rect x="2" y="6" width="1" height="1" fill="#666"/><rect x="3" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="6" width="1" height="1" fill="#666"/><rect x="14" y="6" width="1" height="1" fill="#666"/><rect x="1" y="7" width="1" height="1" fill="#666"/><rect x="2" y="7" width="1" height="1" fill="#666"/><rect x="3" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="5" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="12" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="7" width="1" height="1" fill="#666"/><rect x="14" y="7" width="1" height="1" fill="#666"/><rect x="15" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="14" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="2" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="1" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="11" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="11" width="1" height="1" fill="#f5f5f5"/></g></svg>
+      <div class="lines"><div>the build is green, the coffee's warm</div><div><b>one more commit</b> before the storm</div><div>and the agent hums along</div></div>
+    </div>
+    <div class="prompt">&gt; </div>
+  </div>
+
+  <div class="notes enter" style="animation-delay:.5s">
+    <a class="note" href="#"><b>app-growth-design ↗</b>A Claude Code skill. 30 app teardowns turned into six playbooks for onboarding, paywalls and retention. <code>npx app-growth-design</code></a>
+    <a class="note" href="#"><b>adlib-lyrics ↗</b>A free Claude Code mod. Adlib's lyrics right above your prompt, and the mascot dances on the beat.</a>
+  </div>
+</main>
+<script>
+// board: back-rank position from the island
+const pos={0:'♜',4:'♚',7:'♜',8:'♟',9:'♟',13:'♟',14:'♟',15:'♟',18:'♞',27:'♟',36:'♙',45:'♘',48:'♙',49:'♙',53:'♙',54:'♙',55:'♙',56:'♖',60:'♔',63:'♖'};
+const b=document.getElementById('board');
+for(let i=0;i<64;i++){const s=document.createElement('i');if((Math.floor(i/8)+i)%2)s.className='d';const p=pos[i];if(p){s.textContent=p;if(i>32)s.classList.add('w')}b.appendChild(s)}
+// notch opens on hover / focus / tap
+const n=document.getElementById('notch');let t;
+const open=()=>{clearTimeout(t);n.classList.add('open')},close=()=>{t=setTimeout(()=>n.classList.remove('open'),180)};
+n.addEventListener('pointerenter',open);n.addEventListener('pointerleave',close);n.addEventListener('focus',open);n.addEventListener('blur',close);
+n.addEventListener('click',()=>n.classList.add('open'));
+// lyrics: word focus on a song clock
+const L=["Hi, I'm Asatulla","I make small apps for the Mac","the kind that live in the corners","and a few things for Claude Code","this one is Adlib, by the way"];
+const box=document.getElementById('lines');let k=1;
+function render(){box.innerHTML='';[-1,0,1,2].forEach(o=>{const i=(k+o+L.length)%L.length,d=document.createElement('div');
+  d.className='l '+({'-1':'p1','0':'now','1':'n1','2':'n2'})[o];
+  if(o===0){L[i].split(' ').forEach((w,j)=>{const s=document.createElement('span');s.className='w later';s.textContent=w;d.append(s,' ');setTimeout(()=>s.classList.remove('later'),120+j*190)})}
+  else d.textContent=L[i];box.appendChild(d)});}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){render();setInterval(()=>{k=(k+1)%L.length;render()},2600)}
+// mascot at 120 bpm
+const m=document.getElementById('mascot');setInterval(()=>m.dataset.p=m.dataset.p==='0'?'1':'0',500);
+// clock in Almaty
+const c=document.getElementById('clock');const tick=()=>c.textContent=new Intl.DateTimeFormat('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Almaty'}).format(new Date()).replace(',','');tick();setInterval(tick,15000);
+</script>
+</body>
+</html>

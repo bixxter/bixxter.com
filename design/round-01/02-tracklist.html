@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asatulla — tracklist</title>
+<style>
+:root{
+  --bg:#ffffff; --ink:#0b0b0b; --ink-2:#8b8b8b; --ink-3:#b9b9b9; --line:#e8e8e8;
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  --flow:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1200px;margin:0 auto;padding:0 40px}
+header{display:flex;align-items:baseline;justify-content:space-between;padding:22px 0;font-size:15px;font-weight:500}
+header nav{display:flex;gap:22px;color:var(--ink-2)}
+header nav a:hover{color:var(--ink)}
+h1{font-weight:500;font-size:clamp(40px,6.6vw,90px);line-height:.98;letter-spacing:-.04em;margin:56px 0 0}
+h1 .mute{color:var(--ink-3)}
+h1 .w{display:inline-block;animation:focus .7s var(--flow) both}
+@keyframes focus{from{filter:blur(10px);opacity:0;transform:translateY(.08em) scale(.97)}}
+.sub{margin:28px 0 0;font-size:17px;line-height:1.5;color:var(--ink-2);max-width:44ch}
+.side{display:flex;justify-content:space-between;margin:80px 0 0;padding-bottom:12px;border-bottom:1.5px solid var(--ink);font-size:13px;font-weight:500;letter-spacing:.02em}
+.side span:last-child{color:var(--ink-2)}
+.list + .side{margin-top:56px}
+ol{list-style:none;padding:0}
+.row{position:relative;display:grid;grid-template-columns:52px 1.1fr 1.6fr 170px 24px;align-items:baseline;gap:20px;padding:24px 0 22px;border-bottom:1px solid var(--line);
+  transition:filter .45s var(--flow),opacity .45s var(--flow)}
+.row .n{font:13px var(--mono);color:var(--ink-2)}
+.row .t{font-size:30px;font-weight:500;letter-spacing:-.03em}
+.row .d{font-size:17px;line-height:1.4;color:var(--ink-2)}
+.row .p{font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.row .a{font-size:18px;transition:transform .3s var(--flow)}
+.list:hover .row{filter:blur(1.6px);opacity:.28}
+.list:hover .row:hover{filter:none;opacity:1}
+.row:hover .a{transform:translate(3px,-3px)}
+.peek{position:absolute;right:210px;top:50%;width:300px;aspect-ratio:16/10;border-radius:10px;overflow:hidden;pointer-events:none;z-index:3;
+  opacity:0;transform:translateY(-50%) scale(.94) rotate(-1.5deg);transition:opacity .25s,transform .45s var(--flow);box-shadow:0 24px 60px -18px rgba(0,0,0,.35)}
+.peek img{width:100%;height:100%;object-fit:cover;display:block}
+.row:hover .peek{opacity:1;transform:translateY(-50%) scale(1) rotate(-1.5deg)}
+.peek.code{background:#0c0d10;color:#d6d6d6;font:12px/1.6 var(--mono);padding:14px 16px;aspect-ratio:auto}
+.peek.code i{font-style:normal;color:#7ee787}.peek.code s{text-decoration:none;color:#7d8590}
+.mascot{width:44px;height:33px;display:block;margin-bottom:6px}
+.mascot g{display:none}.mascot[data-p="0"] .p0,.mascot[data-p="1"] .p1{display:inline}
+footer{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin:120px 0 0;padding:20px 0 40px;border-top:1.5px solid var(--ink);font-size:14px;line-height:1.55;color:var(--ink-2)}
+footer b{display:block;color:var(--ink);font-weight:500}
+@media (max-width:760px){
+  .wrap{padding:0 20px}
+  h1{margin-top:44px}
+  .side{margin-top:64px}
+  .row{grid-template-columns:36px 1fr 20px;gap:4px 12px}
+  .row .d{grid-column:2/3;font-size:16px}.row .p{grid-column:2/3}
+  .row .a{grid-row:1;grid-column:3}
+  .peek{display:none}
+  .list:hover .row{filter:none;opacity:1}
+  footer{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><a href="#">Asatulla</a><nav><a href="#">GitHub</a><a href="#">X</a><a href="#">Telegram</a></nav></header>
+
+  <h1 id="h1">I make small Mac apps<br><span class="mute">and tools for Claude Code.</span></h1>
+  <p class="sub">Each one does one thing. I build them alone in Almaty and sell them once, no subscriptions.</p>
+
+  <div class="side"><span>Side A — Mac apps</span><span>2026</span></div>
+  <ol class="list">
+    <li><a class="row" href="#"><span class="n">A1</span><span class="t">Dyno Chess</span><span class="d">Chess in your MacBook's notch. Hover, play a move, get back to work.</span><span class="p">Free · Pro $14.99</span><span class="a">↗</span>
+      <span class="peek"><img src="img/dyno.jpg" alt=""></span></a></li>
+    <li><a class="row" href="#"><span class="n">A2</span><span class="t">Adlib</span><span class="d">Synced lyrics floating over your Mac, word by word. Clicks go right through.</span><span class="p">$4.99 once</span><span class="a">↗</span>
+      <span class="peek"><img src="img/adlib.jpg" alt=""></span></a></li>
+  </ol>
+
+  <div class="side"><span>Side B — Claude Code</span><span>Free, MIT</span></div>
+  <ol class="list">
+    <li><a class="row" href="#"><span class="n">B1</span><span class="t">app-growth-design</span><span class="d">30 app teardowns turned into six playbooks for onboarding, paywalls and retention.</span><span class="p">Skill</span><span class="a">↗</span>
+      <span class="peek code"><s>$</s> npx app-growth-design<br><i>✓</i> installed to ~/.claude/skills<br><br><s>&gt;</s> my paywall converts at 2%<br>Structure out-tests price. A trial on a weekly plan took LTV from $7.40 to $54.50. <s>[06]</s></span></a></li>
+    <li><a class="row" href="#"><span class="n">B2</span><span class="t">adlib-lyrics</span><span class="d">Adlib's lyrics inside Claude Code, right above your prompt. The mascot dances.</span><span class="p">Mod</span><span class="a">↗</span>
+      <span class="peek code"><svg class="mascot" id="mascot" data-p="0" viewBox="0 0 16 12" shape-rendering="crispEdges"><g class="p0"><rect x="5" y="0" width="1" height="1" fill="#666"/><rect x="6" y="0" width="1" height="1" fill="#666"/><rect x="7" y="0" width="1" height="1" fill="#666"/><rect x="8" y="0" width="1" height="1" fill="#666"/><rect x="9" y="0" width="1" height="1" fill="#666"/><rect x="10" y="0" width="1" height="1" fill="#666"/><rect x="3" y="1" width="1" height="1" fill="#666"/><rect x="4" y="1" width="1" height="1" fill="#666"/><rect x="11" y="1" width="1" height="1" fill="#666"/><rect x="12" y="1" width="1" height="1" fill="#666"/><rect x="2" y="2" width="1" height="1" fill="#666"/><rect x="5" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="2" width="1" height="1" fill="#666"/><rect x="2" y="3" width="1" height="1" fill="#666"/><rect x="4" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="3" width="1" height="1" fill="#666"/><rect x="1" y="4" width="1" height="1" fill="#666"/><rect x="2" y="4" width="1" height="1" fill="#666"/><rect x="3" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="4" width="1" height="1" fill="#666"/><rect x="14" y="4" width="1" height="1" fill="#666"/><rect x="1" y="5" width="1" height="1" fill="#666"/><rect x="2" y="5" width="1" height="1" fill="#666"/><rect x="3" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="5" width="1" height="1" fill="#fff"/><rect x="7" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="5" width="1" height="1" fill="#fff"/><rect x="11" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="5" width="1" height="1" fill="#666"/><rect x="14" y="5" width="1" height="1" fill="#666"/><rect x="1" y="6" width="1" height="1" fill="#666"/><rect x="2" y="6" width="1" height="1" fill="#666"/><rect x="3" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="6" width="1" height="1" fill="#666"/><rect x="14" y="6" width="1" height="1" fill="#666"/><rect x="0" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="1" y="7" width="1" height="1" fill="#666"/><rect x="2" y="7" width="1" height="1" fill="#666"/><rect x="3" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="5" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="12" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="7" width="1" height="1" fill="#666"/><rect x="14" y="7" width="1" height="1" fill="#666"/><rect x="1" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="2" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="14" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="11" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="11" width="1" height="1" fill="#f5f5f5"/></g><g class="p1"><rect x="5" y="0" width="1" height="1" fill="#666"/><rect x="6" y="0" width="1" height="1" fill="#666"/><rect x="7" y="0" width="1" height="1" fill="#666"/><rect x="8" y="0" width="1" height="1" fill="#666"/><rect x="9" y="0" width="1" height="1" fill="#666"/><rect x="10" y="0" width="1" height="1" fill="#666"/><rect x="3" y="1" width="1" height="1" fill="#666"/><rect x="4" y="1" width="1" height="1" fill="#666"/><rect x="11" y="1" width="1" height="1" fill="#666"/><rect x="12" y="1" width="1" height="1" fill="#666"/><rect x="2" y="2" width="1" height="1" fill="#666"/><rect x="5" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="2" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="2" width="1" height="1" fill="#666"/><rect x="2" y="3" width="1" height="1" fill="#666"/><rect x="4" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="3" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="3" width="1" height="1" fill="#666"/><rect x="1" y="4" width="1" height="1" fill="#666"/><rect x="2" y="4" width="1" height="1" fill="#666"/><rect x="3" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="4" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="4" width="1" height="1" fill="#666"/><rect x="14" y="4" width="1" height="1" fill="#666"/><rect x="1" y="5" width="1" height="1" fill="#666"/><rect x="2" y="5" width="1" height="1" fill="#666"/><rect x="3" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="5" width="1" height="1" fill="#fff"/><rect x="7" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="5" width="1" height="1" fill="#fff"/><rect x="11" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="5" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="5" width="1" height="1" fill="#666"/><rect x="14" y="5" width="1" height="1" fill="#666"/><rect x="1" y="6" width="1" height="1" fill="#666"/><rect x="2" y="6" width="1" height="1" fill="#666"/><rect x="3" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="6" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="6" width="1" height="1" fill="#666"/><rect x="14" y="6" width="1" height="1" fill="#666"/><rect x="1" y="7" width="1" height="1" fill="#666"/><rect x="2" y="7" width="1" height="1" fill="#666"/><rect x="3" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="5" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="7" width="1" height="1" fill="#c7c7c7"/><rect x="12" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="7" width="1" height="1" fill="#666"/><rect x="14" y="7" width="1" height="1" fill="#666"/><rect x="15" y="7" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="13" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="14" y="8" width="1" height="1" fill="#f5f5f5"/><rect x="2" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="3" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="12" y="9" width="1" height="1" fill="#f5f5f5"/><rect x="1" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="5" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="6" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="7" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="8" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="9" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="10" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="10" width="1" height="1" fill="#f5f5f5"/><rect x="4" y="11" width="1" height="1" fill="#f5f5f5"/><rect x="11" y="11" width="1" height="1" fill="#f5f5f5"/></g></svg><s>the build is green, the coffee's warm</s><br><b style="color:#fff">one more commit</b> before the storm<br><s>and the agent hums along</s></span></a></li>
+  </ol>
+
+  <footer>
+    <div><b>Asatulla</b>bixxter on most things</div>
+    <div><b>Almaty, Kazakhstan</b>UTC+5</div>
+    <div><b>Say hi</b>Telegram is the fastest</div>
+  </footer>
+</div>
+<script>
+const h=document.getElementById('h1');let i=0;
+h.querySelectorAll(':scope > span, :scope').forEach(()=>{});
+// split into words, keep the muted span
+function split(el){[...el.childNodes].forEach(n=>{if(n.nodeType===3){const f=document.createDocumentFragment();n.textContent.split(/(\s+)/).forEach(t=>{if(!t.trim()){f.append(t);return}const s=document.createElement('span');s.className='w';s.style.animationDelay=(i++*55)+'ms';s.textContent=t;f.append(s)});n.replaceWith(f)}else split(n)})}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches)split(h);
+const m=document.getElementById('mascot');setInterval(()=>m.dataset.p=m.dataset.p==='0'?'1':'0',500);
+</script>
+</body>
+</html>
