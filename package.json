@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "deploy": "next build && touch out/.nojekyll && echo bixxter.com > out/CNAME && cd out && git init -q -b gh-pages && git add -A && git commit -qm deploy && git push -qf git@github.com:bixxter/bixxter.com.git gh-pages && rm -rf .git"
+    "start": "next start"
   },
   "dependencies": {
     "next": "16.3.8",
