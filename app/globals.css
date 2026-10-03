@@ -215,3 +215,5 @@ li:last-child .row { border-bottom: 0; } /* the next section's rule does that jo
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .pose-1 { visibility: hidden; }
 }
+
+h1 .mute a { color: var(--ink); }
